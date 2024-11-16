@@ -24,5 +24,20 @@ print(transactions_df.isna().sum())
 # TEST print(transactions_df['LLP_LC_ORIG'] - (transactions_df['LOCAL_LIST_PRICE'] * transactions_df['QUANTITY']))
 
 
+product_df.rename(columns={'FY': 'FISCAL_YEAR'}, inplace=True )
+
+merged_main_df = pd.merge(transactions_df, product_df, on=['FISCAL_YEAR', 'PRODUCT_CODE'], how='inner')
+
+merged_main_df = pd.merge(merged_main_df, customer_df, on=['FISCAL_YEAR', 'CUST_NO'], how='inner')
+
+print(merged_main_df.columns)
+#
+#
+# transactions_df
+# merged_df =
+#
+# print(merged_df)
+#
+
 
 
