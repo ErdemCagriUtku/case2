@@ -1,3 +1,5 @@
+from lib2to3.main import diff_texts
+
 import config.config
 from src.ingestion.load_new_data import load_new_data
 from src.preprocessing.data_prep import format_data
@@ -68,14 +70,13 @@ model_df = merged_main_df.groupby(['LPG_CODE', 'BUSINESS_SEGMENT', 'FISCAL_YEAR'
  ).reset_index()
 #'PRODUCT_TYPE', ->filtered out
 
-
+model_df_backup=model_df
 model_df=model_df[model_df['sum_LLP_GC_ORIG']!=0]
 #model_df['volume_weighted_average']=model_df['sum_DISCOUNT']/model_df['sum_LLP_GC_ORIG']
 
 print (model_df['volume_weighted_average'])
 
 
-model_df=model_df[model_df['sum_LLP_GC_ORIG']!=0]
 print(model_df.info)
 print(model_df.isna().sum())
 print(model_df.dtypes)
@@ -140,7 +141,7 @@ print(f"Lasso Regression MSE: {mean_squared_error(y_test, lasso_pred)}")
 # model_df['count_rows']=model_df.groupby(['LPG_CODE', 'BUSINESS_SEGMENT', 'FISCAL_YEAR', 'CUST_NAME','CUST_ADRESSE_ORT'])['FISCAL_YEAR'].transform('count')
 # print(model_df[model_df['count_rows']!=1])
 
-pred_df=model_df[model_features]
+pred_df=model_df_backup[model_features]
 pred_df['FISCAL_YEAR']=2025
 pred_df['PREDS_2025']=lasso_model.predict(pred_df)
 
@@ -159,11 +160,18 @@ print(final_preds)
 
 final_preds.to_csv(config.config.SAVE_PREDS_PATH, index=False)
 
+# MESELELER
 #
-# print(pred_df['aggregated_2025_preds'].mean(axis=0))
-#
-# print(merged_main_df.iloc[:,0:].mean(axis=0))
+# 1) join lerken ki year ve pr code, year ve customer code unique degil, uniquelestirilmesi lazim
+# 2) modeli kurarken büyük bir granularity yaptim, ama sonuc bu granularitede degil, bu mantikli mi
+# 3) predict yaparken direkt bütün eski data setini ayniymis gibi kabul ettim (sales volume leri de dahil), bu mantikli mi?
+# 4) gelen kodu hic test etmedim (data validation kismi)
+# 5) kodumun tamami ayni sayfada structure edilmesi lazim (fonksiyonlar vs olusturulmasi lazim)
+# 6) pipeline dizayninin ne oldugunu tam olarak anlayip ona uygun bir sey yaptigimdan emin olmam lazim
+# 7) laso ve ridge regressionlarin parametrelerini baska sayilarla denemedim, optimize edilmesi gerekebilir
+# 8) Cocuka mail atip, yarim saat schedule etmem lazim
+# 9) Umut, rabia veya harunla konusmam lazim bu olmus mu diye
+# 10) kodumu anlatan basit bir görsel hazirlamam lazim
+# 11) en son kodumu temizlemem lazim
 
 
-#ayni df ile 2025 icin predictionlar yapilabilir ve bir müsteri icin birden fayla pred varsa ortalanabilir
-#2025 icin predictionlar
