@@ -22,7 +22,10 @@ def pre_process(transactions_df, customer_df, product_df):
     # grouped = df.groupby(['Category', 'Subcategory'])['Value'].first().reset_index()
     # print(grouped)
 
-    product_df.rename(columns={'FY': 'FISCAL_YEAR'}, inplace=True )
+    product_df.rename(columns={'FY': 'FISCAL_YEAR'}, inplace=True)
+
+    product_df = product_df.drop_duplicates(subset=['FISCAL_YEAR', 'PRODUCT_CODE'],keep='last')
+    customer_df = customer_df.drop_duplicates(subset=['FISCAL_YEAR', 'CUST_NO'], keep='last')
 
     merged_main_df = pd.merge(transactions_df, product_df, on=['FISCAL_YEAR', 'PRODUCT_CODE'], how='inner')
 
