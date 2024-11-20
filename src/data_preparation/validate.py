@@ -1,6 +1,24 @@
 import pandas as pd
 import io
 from datetime import datetime
+import os
+
+
+# Check if the path exists and not empty
+def is_file_empty(file_path):
+
+    if not os.path.exists(file_path):
+        print (f"The file '{file_path}' does not exist.")
+        return True
+
+    # Check if the file size is 0 bytes
+    if os.path.getsize(file_path) == 0:
+        print(f"The file '{file_path}' exists and is empty.")
+        return True
+    else:
+         print(f"The file '{file_path}' exists and is not empty.")
+         return False
+
 
 # Check if file format is CSV
 def is_csv(data: str) -> bool:
@@ -28,12 +46,11 @@ def is_transaction_date_valid(data: pd.DataFrame, date_column: str) -> bool:
     today = pd.to_datetime(datetime.now().date())
     return (pd.to_datetime(data[date_column], errors='coerce') <= today).all()
 
-# Check if transaction year and month are drivable from transaction date
-def is_year_month_deriveable(data: pd.DataFrame, date_column: str, year_column: str, month_column: str) -> bool:
+# Check if transaction year is drivable from transaction date
+def is_year_month_deriveable(data: pd.DataFrame, date_column: str, year_column: str) -> bool:
     data[date_column] = pd.to_datetime(data[date_column], errors='coerce')
     year_match = (data[date_column].dt.year == data[year_column]).all()
-    month_match = (data[date_column].dt.month == data[month_column]).all()
-    return year_match and month_match
+    return year_match
 
 # Check for duplicates based on customer number, product number, and transaction date
 def has_no_duplicates(data: pd.DataFrame) -> bool:
