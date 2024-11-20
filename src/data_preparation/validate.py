@@ -97,8 +97,6 @@ def clean_nas_and_print_message(df: pd.DataFrame, critical_column: str):
     return df_cleaned
 
 
-import pandas as pd
-
 
 def filter_outliers_with_constant(df, columns, max_allowed_value, transaction_id_column):
 

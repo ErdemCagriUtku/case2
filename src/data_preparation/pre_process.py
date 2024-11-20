@@ -86,6 +86,3 @@ def pre_process(transactions_df, customer_df, product_df):
     return model_df
 
 
-import pandas as pd
-
-

@@ -13,13 +13,13 @@ def predict_next_year (model_df,final_reg_model,pred_year):
 
     pred_df['DISCOUNT_PREDICTIONS_PRED_YEAR']=final_reg_model.predict(pred_df)
 
+    # TEST
     #print(pred_df['PREDS_NEXT_YEAR'].mean(axis=0))
     #print(pred_df)
     #print(model_df_train['volume_weighted_average'].mean(axis=0))
+    # print(pred_df)
 
     cols = ['LPG_CODE', 'CUST_NAME']
     pred_df[cols] = pred_df[cols].astype('int64')
-
-    #print(pred_df)
 
     return pred_df[['CUST_NAME','LPG_CODE', 'DISCOUNT_PREDICTIONS_PRED_YEAR']]
