@@ -3,6 +3,7 @@ from src.data_preparation.validate import is_csv, is_table_not_empty, has_no_dup
     is_transaction_date_valid, is_year_month_deriveable, clean_nas_and_print_message, is_file_empty, \
     filter_outliers_with_constant, remove_duplicate_rows, check_column_types
 from src.ingestion.load_new_data import load_new_data
+from src.data_preparation.validate import remove_rows_if_unreasonable_discount
 from src.data_preparation.pre_process import pre_process
 import sys
 from src.model.predict import predict_next_year
@@ -48,7 +49,9 @@ if not is_table_not_empty(customer_df):
 if not is_table_not_empty(transactions_df):
     print("Data table is empty")
     sys.exit()
-
+# TEST
+print("\nfirst check tr:")
+print(transactions_df[['LLP_GC_ORIG', 'REVENUE_GC_ORIG']].sum())
 
 # if not has_no_duplicates(transactions_df):
 #     transactions_df = transactions_df.drop_duplicates()
@@ -85,6 +88,9 @@ transactions_df = clean_nas_and_print_message(transactions_df, 'PRODUCT_CODE')
 value_check_columns = ['REVENUE_GC_ORIG', 'LLP_GC_ORIG']
 transactions_df = filter_outliers_with_constant(transactions_df, value_check_columns, config.config.MAX_VOL_PRICE, "PK")
 
+# Above 100% discount rates removed
+transactions_df = remove_rows_if_unreasonable_discount(transactions_df)
+
 # TEST
 # print("\ntransactions_df:")
 # print(transactions_df.dtypes)
@@ -94,7 +100,7 @@ transactions_df = filter_outliers_with_constant(transactions_df, value_check_col
 # print(product_df.dtypes)
 
 
-# dtypes checked
+# Dtypes checked
 format_check_columns_product = ['FY', 'PRODUCT_CODE']
 check_column_types(product_df, format_check_columns_product, 'int64')
 
@@ -107,6 +113,8 @@ check_column_types(transactions_df, format_check_columns_tr, 'int64')
 format_check_columns_tr_fl = ['REVENUE_LC_ORIG', 'REVENUE_GC_ORIG', 'LOCAL_LIST_PRICE', 'LLP_LC_ORIG',  'LLP_GC_ORIG']
 check_column_types(transactions_df, format_check_columns_tr_fl, 'float64')
 
+# TEST
+#print(transactions_df[['LLP_GC_ORIG', 'REVENUE_GC_ORIG']].sum())
 
 #prepare the data
 model_df=pre_process(transactions_df, customer_df, product_df)
@@ -116,10 +124,10 @@ model_df=pre_process(transactions_df, customer_df, product_df)
 # print(model_df.dtypes)
 
 #pick the best model
-final_reg_model=train_model(model_df,config.config.LAST_YEAR)
+final_reg_model=train_model(model_df,config.config.PREDICTION_YEAR)
 
 #predict the next year
-pred_df=predict_next_year(model_df,final_reg_model,config.config.LAST_YEAR+1)
+pred_df=predict_next_year(model_df,final_reg_model,config.config.PREDICTION_YEAR)
 
 #save the predictions
 pred_df.to_csv(config.config.SAVE_PREDS_PATH, index=False)

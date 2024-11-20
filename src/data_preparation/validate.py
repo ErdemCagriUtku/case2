@@ -135,3 +135,21 @@ def check_column_types(df, columns_to_check, expected_type):
 
     return column_types
 
+def remove_rows_if_unreasonable_discount (df):
+
+    # Identify rows where 'REVENUE_GC_ORIG' is greater than 'LLP_GC_ORIG'
+    rows_to_remove = df['REVENUE_GC_ORIG'] > df['LLP_GC_ORIG']
+
+    # Check if there are any rows to remove
+    if rows_to_remove.any():
+        # Remove the rows
+        rows_removed = df[rows_to_remove].index
+        df = df[~rows_to_remove]  # Keep only rows where the condition is not met
+
+        # Notify the user
+        print(f"Rows with indices {list(rows_removed)} have been removed because "
+              "'REVENUE_GC_ORIG' was greater than 'LLP_GC_ORIG'.")
+    else:
+        print("No rows were removed. 'REVENUE_GC_ORIG' was not greater than 'LLP_GC_ORIG' in any row.")
+
+    return df
