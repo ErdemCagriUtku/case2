@@ -13,6 +13,7 @@ def train_model (model_df, prediction_year):
     model_df_test = model_df[model_df['FISCAL_YEAR']==prediction_year-1]
 
 
+
     model_df_train = pd.merge(model_df_train.drop(columns=['discount_weighted_average']), model_df_validation[['LPG_CODE', 'CUST_NAME','discount_weighted_average']], on=['LPG_CODE', 'CUST_NAME'], how='inner')
     model_df_train.rename(columns={'discount_weighted_average': 'next_years_discount_weighted_average'}, inplace=True)
     # TEST
