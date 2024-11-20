@@ -1,13 +1,12 @@
 import config.config
 from src.data_preparation.validate import is_csv, is_table_not_empty, has_no_duplicates, has_valid_date_format, \
     is_transaction_date_valid, is_year_month_deriveable, clean_nas_and_print_message, is_file_empty, \
-    filter_outliers_with_constant
+    filter_outliers_with_constant, remove_duplicate_rows, check_column_types
 from src.ingestion.load_new_data import load_new_data
 from src.data_preparation.pre_process import pre_process
 import sys
 from src.model.predict import predict_next_year
 from src.model.train_model import train_model
-
 
 
 # Check if the path exists/empty
@@ -50,10 +49,15 @@ if not is_table_not_empty(transactions_df):
     print("Data table is empty")
     sys.exit()
 
-if not has_no_duplicates(transactions_df):
-    transactions_df = transactions_df.drop_duplicates()
-    print("Duplicate records detected and removed from transaction data")
 
+# if not has_no_duplicates(transactions_df):
+#     transactions_df = transactions_df.drop_duplicates()
+#     print("Duplicate records detected and removed from transaction data")
+
+# Duplicates are detected, removed and logged
+transactions_df = remove_duplicate_rows(transactions_df, primary_key_column="PK")
+
+# Date format, range and consistency checked
 if not has_valid_date_format(transactions_df, "TRANSACTION_DATE"):
     print("Invalid date format")
 elif not is_transaction_date_valid (transactions_df, "TRANSACTION_DATE"):
@@ -78,12 +82,38 @@ transactions_df = clean_nas_and_print_message(transactions_df, 'CUST_NO')
 transactions_df = clean_nas_and_print_message(transactions_df, 'PRODUCT_CODE')
 
 # Outliers removed
-value_check_columns = ['REVENUE_LC_ORIG', 'REVENUE_GC_ORIG', 'LLP_LC_ORIG', 'LLP_GC_ORIG']
+value_check_columns = ['REVENUE_GC_ORIG', 'LLP_GC_ORIG']
 transactions_df = filter_outliers_with_constant(transactions_df, value_check_columns, config.config.MAX_VOL_PRICE, "PK")
+
+# TEST
+# print("\ntransactions_df:")
+# print(transactions_df.dtypes)
+# print("\ncustomer_df:")
+# print(customer_df.dtypes)
+# print("\nproduct_df:")
+# print(product_df.dtypes)
+
+
+# dtypes checked
+format_check_columns_product = ['FY', 'PRODUCT_CODE']
+check_column_types(product_df, format_check_columns_product, 'int64')
+
+format_check_columns_cust = ['FISCAL_YEAR', 'CUST_NO']
+check_column_types(customer_df, format_check_columns_cust, 'int64')
+
+format_check_columns_tr = ['FISCAL_YEAR', 'CUST_NO', 'PRODUCT_CODE']
+check_column_types(transactions_df, format_check_columns_tr, 'int64')
+
+format_check_columns_tr_fl = ['REVENUE_LC_ORIG', 'REVENUE_GC_ORIG', 'LOCAL_LIST_PRICE', 'LLP_LC_ORIG',  'LLP_GC_ORIG']
+check_column_types(transactions_df, format_check_columns_tr_fl, 'float64')
 
 
 #prepare the data
 model_df=pre_process(transactions_df, customer_df, product_df)
+
+# TEST
+# print("\nmodel_df:")
+# print(model_df.dtypes)
 
 #pick the best model
 final_reg_model=train_model(model_df,config.config.LAST_YEAR)

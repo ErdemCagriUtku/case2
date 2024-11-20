@@ -52,9 +52,30 @@ def is_year_month_deriveable(data: pd.DataFrame, date_column: str, year_column: 
     year_match = (data[date_column].dt.year == data[year_column]).all()
     return year_match
 
-# Check for duplicates based on customer number, product number, and transaction date
+# Check for duplicates based on customer number, product number, and transaction date (not performed))
 def has_no_duplicates(data: pd.DataFrame) -> bool:
     return not data.duplicated().any()
+
+# Check for duplicates
+def remove_duplicate_rows(df, primary_key_column):
+
+    # Identify duplicate rows
+    duplicate_rows = df[df.duplicated(keep=False)]  # Keep all duplicates for logging
+    removed_pk_values = duplicate_rows[primary_key_column].unique()  # Get unique PKs of duplicates
+
+    if not duplicate_rows.empty:
+        print(
+            f"The following rows were identified as duplicates and removed based on the PK column '{primary_key_column}':")
+        for pk in removed_pk_values:
+            print(f" - {pk}")
+    else:
+        print("No duplicate rows found.")
+
+    # Remove duplicates (keeping the first occurrence)
+    filtered_df = df.drop_duplicates(keep='first')
+
+    return filtered_df
+
 
 
 def clean_nas_and_print_message(df: pd.DataFrame, critical_column: str):
@@ -85,7 +106,7 @@ def filter_outliers_with_constant(df, columns, max_allowed_value, transaction_id
     for col in columns:
 
         # Identify rows where the column value exceeds the maximum allowed value
-        outlier_rows = df[df[col] > max_allowed_value or df[col] < 0]
+        outlier_rows = df[(df[col] > max_allowed_value) | (df[col] < 0)]
         for _, row in outlier_rows.iterrows():
             transaction_id = row[transaction_id_column]
             print(
@@ -96,3 +117,21 @@ def filter_outliers_with_constant(df, columns, max_allowed_value, transaction_id
     filtered_df = df.drop(index=rows_to_remove)
 
     return filtered_df
+
+
+def check_column_types(df, columns_to_check, expected_type):
+
+    column_types = {}
+
+    for col in columns_to_check:
+        if col in df.columns:
+            col_type = df[col].dtype
+            if col_type == expected_type:
+                column_types[col] = col_type
+            else:
+                column_types[col] = f"Column {col} is not {expected_type}, found {col_type}"
+        else:
+            column_types[col] = "Column not found in DataFrame"
+
+    return column_types
+
