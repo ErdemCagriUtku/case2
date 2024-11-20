@@ -74,3 +74,25 @@ def clean_nas_and_print_message(df: pd.DataFrame, critical_column: str):
 
     return df_cleaned
 
+
+import pandas as pd
+
+
+def filter_outliers_with_constant(df, columns, max_allowed_value, transaction_id_column):
+
+    rows_to_remove = []
+
+    for col in columns:
+
+        # Identify rows where the column value exceeds the maximum allowed value
+        outlier_rows = df[df[col] > max_allowed_value or df[col] < 0]
+        for _, row in outlier_rows.iterrows():
+            transaction_id = row[transaction_id_column]
+            print(
+                f"Row with {transaction_id_column} '{transaction_id}' is deleted due to high/low value in column '{col}'.")
+            rows_to_remove.append(row.name)
+
+    # Drop the rows identified as outliers
+    filtered_df = df.drop(index=rows_to_remove)
+
+    return filtered_df

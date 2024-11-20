@@ -1,11 +1,13 @@
 import config.config
 from src.data_preparation.validate import is_csv, is_table_not_empty, has_no_duplicates, has_valid_date_format, \
-    is_transaction_date_valid, is_year_month_deriveable, clean_nas_and_print_message, is_file_empty
+    is_transaction_date_valid, is_year_month_deriveable, clean_nas_and_print_message, is_file_empty, \
+    filter_outliers_with_constant
 from src.ingestion.load_new_data import load_new_data
 from src.data_preparation.pre_process import pre_process
 import sys
 from src.model.predict import predict_next_year
 from src.model.train_model import train_model
+
 
 
 # Check if the path exists/empty
@@ -74,6 +76,11 @@ transactions_df = clean_nas_and_print_message(transactions_df, 'PK')
 transactions_df = clean_nas_and_print_message(transactions_df, 'FISCAL_YEAR')
 transactions_df = clean_nas_and_print_message(transactions_df, 'CUST_NO')
 transactions_df = clean_nas_and_print_message(transactions_df, 'PRODUCT_CODE')
+
+# Outliers removed
+value_check_columns = ['REVENUE_LC_ORIG', 'REVENUE_GC_ORIG', 'LLP_LC_ORIG', 'LLP_GC_ORIG']
+transactions_df = filter_outliers_with_constant(transactions_df, value_check_columns, config.config.MAX_VOL_PRICE, "PK")
+
 
 #prepare the data
 model_df=pre_process(transactions_df, customer_df, product_df)

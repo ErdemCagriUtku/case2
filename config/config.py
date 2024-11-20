@@ -3,6 +3,7 @@ CUSTOMER_PATH = 'C:/Users/cagri/Downloads/Case Study - Part 2/customer_master_an
 TRANSACTIONS_PATH = 'C:/Users/cagri/Downloads/Case Study - Part 2/transactions_anonymised.csv'
 
 LAST_YEAR = 2024
+MAX_VOL_PRICE = 100000000
 
 SAVE_PREDS_PATH = 'C:/Users/cagri/Downloads/Case Study - Part 2/preds_output.csv'
 
