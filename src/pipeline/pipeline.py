@@ -1,4 +1,4 @@
-import config.config
+import config
 from src.data_preparation.validate import is_csv, is_table_not_empty, has_no_duplicates, has_valid_date_format, \
     is_transaction_date_valid, is_year_month_deriveable, clean_nas_and_print_message, is_file_empty, \
     filter_outliers_with_constant, remove_duplicate_rows, check_column_types
@@ -11,31 +11,31 @@ from src.model.train_model import train_model
 
 
 # Check if the path exists/empty
-if is_file_empty(config.config.PRODUCT_PATH):
+if is_file_empty(config.PRODUCT_PATH):
     sys.exit()
 
-if is_file_empty(config.config.CUSTOMER_PATH):
+if is_file_empty(config.CUSTOMER_PATH):
     sys.exit()
 
-if is_file_empty(config.config.TRANSACTIONS_PATH):
+if is_file_empty(config.TRANSACTIONS_PATH):
     sys.exit()
 
 # Check if the format is csv
-if not is_csv(config.config.PRODUCT_PATH):
+if not is_csv(config.PRODUCT_PATH):
     print("Invalid Product Master CSV format. Please provide a valid csv file.")
     sys.exit()
 
-if not is_csv(config.config.CUSTOMER_PATH):
+if not is_csv(config.CUSTOMER_PATH):
     print("Invalid Customer Master CSV format. Please provide a valid csv file.")
     sys.exit()
 
 
-if not is_csv(config.config.TRANSACTIONS_PATH):
+if not is_csv(config.TRANSACTIONS_PATH):
     print("Invalid Transactions CSV format. Please provide a valid csv file.")
     sys.exit()
 
 
-product_df, customer_df, transactions_df = load_new_data(config.config.PRODUCT_PATH, config.config.CUSTOMER_PATH, config.config.TRANSACTIONS_PATH)
+product_df, customer_df, transactions_df = load_new_data(config.PRODUCT_PATH, config.CUSTOMER_PATH, config.TRANSACTIONS_PATH)
 
 
 if not is_table_not_empty(product_df):
@@ -53,6 +53,7 @@ if not is_table_not_empty(transactions_df):
 print("\nfirst check tr:")
 print(transactions_df[['LLP_GC_ORIG', 'REVENUE_GC_ORIG']].sum())
 
+# TEST
 # if not has_no_duplicates(transactions_df):
 #     transactions_df = transactions_df.drop_duplicates()
 #     print("Duplicate records detected and removed from transaction data")
@@ -86,7 +87,7 @@ transactions_df = clean_nas_and_print_message(transactions_df, 'PRODUCT_CODE')
 
 # Outliers removed
 value_check_columns = ['REVENUE_GC_ORIG', 'LLP_GC_ORIG']
-transactions_df = filter_outliers_with_constant(transactions_df, value_check_columns, config.config.MAX_VOL_PRICE, "PK")
+transactions_df = filter_outliers_with_constant(transactions_df, value_check_columns, config.MAX_VOL_PRICE, "PK")
 
 # Above 100% discount rates removed
 transactions_df = remove_rows_if_unreasonable_discount(transactions_df)
@@ -124,13 +125,13 @@ model_df=pre_process(transactions_df, customer_df, product_df)
 # print(model_df.dtypes)
 
 #pick the best model
-final_reg_model=train_model(model_df,config.config.PREDICTION_YEAR)
+final_reg_model=train_model(model_df,config.PREDICTION_YEAR)
 
 #predict the next year
-pred_df=predict_next_year(model_df,final_reg_model,config.config.PREDICTION_YEAR)
+pred_df=predict_next_year(model_df,final_reg_model,config.PREDICTION_YEAR)
 
 #save the predictions
-pred_df.to_csv(config.config.SAVE_PREDS_PATH, index=False)
+pred_df.to_csv(config.SAVE_PREDS_PATH, index=False)
 
 
 

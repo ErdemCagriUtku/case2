@@ -11,10 +11,3 @@ MAX_VOL_PRICE = 100000000  # Max value to filter outliers
 
 # Output paths: Where to save the prediction results
 SAVE_PREDS_PATH = 'C:/Users/cagri/Downloads/Case Study - Part 2/preds_output.csv'
-
-
-
-
-
-
-

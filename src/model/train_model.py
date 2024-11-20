@@ -4,8 +4,6 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error
 from sklearn.linear_model import Ridge
 from sklearn.linear_model import Lasso
 
-from config import config
-
 
 def train_model (model_df, prediction_year):
 
