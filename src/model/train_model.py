@@ -16,8 +16,9 @@ def train_model (model_df, prediction_year):
 
     model_df_train = pd.merge(model_df_train.drop(columns=['discount_weighted_average']), model_df_validation[['LPG_CODE', 'CUST_NAME','discount_weighted_average']], on=['LPG_CODE', 'CUST_NAME'], how='inner')
     model_df_train.rename(columns={'discount_weighted_average': 'next_years_discount_weighted_average'}, inplace=True)
+
     # TEST
-    print(model_df_train.info)
+    #print(model_df_train.info)
 
     model_df_validation = pd.merge(model_df_validation.drop(columns=['discount_weighted_average']), model_df_test[['LPG_CODE', 'CUST_NAME','discount_weighted_average']], on=['LPG_CODE', 'CUST_NAME'], how='inner')
     model_df_validation.rename(columns={'discount_weighted_average': 'next_years_discount_weighted_average'}, inplace=True)

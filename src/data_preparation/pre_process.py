@@ -17,9 +17,8 @@ def pre_process(transactions_df, customer_df, product_df):
 
     # TEST
     # print(transactions_df.isna().sum())
-
-    print((transactions_df==0).sum())
-    print(transactions_df.isna().sum())
+    # print((transactions_df==0).sum())
+    # print(transactions_df.isna().sum())
 
     # TEST
     # print(transactions_df.loc[:,'DISCOUNT_RATE'].mean())
@@ -39,7 +38,7 @@ def pre_process(transactions_df, customer_df, product_df):
     merged_main_df=merged_main_df[merged_main_df['LLP_GC_ORIG']!=0]
 
     #TEST
-    merged_main_df.to_csv('C:/Users/cagri/Downloads/Case Study - Part 2/merged_main_df.csv', index=False)
+    #merged_main_df.to_csv('C:/Users/cagri/Downloads/Case Study - Part 2/merged_main_df.csv', index=False)
 
     # TEST
     # print(merged_main_df['BUSINESS_SEGMENT'].isna().sum())
@@ -80,9 +79,9 @@ def pre_process(transactions_df, customer_df, product_df):
     model_df[cols] = model_df[cols].astype('category')
 
     #TEST
-    model_df.to_csv('C:/Users/cagri/Downloads/Case Study - Part 2/model_df.csv', index=False)
-    print("\nmodel_sums:")
-    print(model_df[['sum_DISCOUNT', 'sum_REVENUE_GC_ORIG', 'sum_LLP_GC_ORIG']].sum())
+    #model_df.to_csv('C:/Users/cagri/Downloads/Case Study - Part 2/model_df.csv', index=False)
+    #print("\nmodel_sums:")
+    #print(model_df[['sum_DISCOUNT', 'sum_REVENUE_GC_ORIG', 'sum_LLP_GC_ORIG']].sum())
 
     return model_df
 

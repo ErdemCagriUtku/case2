@@ -1,5 +1,5 @@
 import config
-from src.data_preparation.validate import is_csv, is_table_not_empty, has_no_duplicates, has_valid_date_format, \
+from src.data_preparation.validate import is_csv, is_table_not_empty, has_valid_date_format, \
     is_transaction_date_valid, is_year_month_deriveable, clean_nas_and_print_message, is_file_empty, \
     filter_outliers_with_constant, remove_duplicate_rows, check_column_types
 from src.ingestion.load_new_data import load_new_data
@@ -49,9 +49,10 @@ if not is_table_not_empty(customer_df):
 if not is_table_not_empty(transactions_df):
     print("Data table is empty")
     sys.exit()
+
 # TEST
-print("\nfirst check tr:")
-print(transactions_df[['LLP_GC_ORIG', 'REVENUE_GC_ORIG']].sum())
+# print("\nfirst check tr:")
+# print(transactions_df[['LLP_GC_ORIG', 'REVENUE_GC_ORIG']].sum())
 
 # TEST
 # if not has_no_duplicates(transactions_df):

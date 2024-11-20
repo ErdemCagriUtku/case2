@@ -52,9 +52,10 @@ def is_year_month_deriveable(data: pd.DataFrame, date_column: str, year_column: 
     year_match = (data[date_column].dt.year == data[year_column]).all()
     return year_match
 
+# TEST
 # Check for duplicates based on customer number, product number, and transaction date (not performed))
-def has_no_duplicates(data: pd.DataFrame) -> bool:
-    return not data.duplicated().any()
+# def has_no_duplicates(data: pd.DataFrame) -> bool:
+#     return not data.duplicated().any()
 
 # Check for duplicates
 def remove_duplicate_rows(df, primary_key_column):
