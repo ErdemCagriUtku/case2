@@ -14,12 +14,12 @@ This project requires the user to specify key configuration variables before run
 <br /> Example: "C:/Users/cagri/Downloads/Case Study - Part 2/transactions_anonymised.csv"
 
 ### Value Range Settings
-* MAX_VOL_PRICE: Maximum allowable value for volume-related pricing to identify and handle outliers.
-Example: 100000000
+* MAX_VOL_PRICE: Maximum allowable value for volume-related pricing (in HQ Currency) to identify and handle outliers.
+<br /> Example: 100000000
 
 ### Output Settings
 * SAVE_PREDS_PATH: Path where the generated predictions file will be saved.
-Example: C:/Users/cagri/Downloads/Case Study - Part 2/preds_output.csv
+<br /> Example: C:/Users/cagri/Downloads/Case Study - Part 2/preds_output.csv
 
 ## Instructions
 Edit the config.py file to input the correct file paths and settings for your environment.
